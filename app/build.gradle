@@ -6,7 +6,7 @@ apply from: '../config/quality.gradle'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "24.0.3"
 
     dexOptions {
 //        incremental true
@@ -93,4 +93,7 @@ dependencies {
 
     //----- Easy Permission Management
     compile "com.karumi:dexter:2.2.2"
+
+    //----- ArrowWidget (speedometer like)
+    compile 'com.cardiomood.android:android-widgets:0.1.1'
 }

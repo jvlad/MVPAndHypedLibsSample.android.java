@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sample Base MVP</string>
+    <string name="app_name">Android Test</string>
 
     <string name="action_settings">Settings</string>
     <string name="temp_current">0°</string>
@@ -38,5 +38,8 @@
     <string name="generic_error_title">Ops! An error occurred.</string>
     <string name="next_days">Next Days</string>
     <string name="forecast">Forecast</string>
+    <string name="error_loading_air_quality">Error loading Air Quality</string>
+    <string name="air_quality_update_succes">Succes: Air Quality Updated</string>
+    <string name="location_permisson_not_granted">Location permission required</string>
 
 </resources>

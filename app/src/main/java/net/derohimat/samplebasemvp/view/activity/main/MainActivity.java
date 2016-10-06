@@ -2,24 +2,29 @@ package net.derohimat.samplebasemvp.view.activity.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cardiomood.android.controls.gauge.SpeedometerGauge;
+
 import net.derohimat.samplebasemvp.R;
+import net.derohimat.samplebasemvp.data.local.devicelocation.DeviceLocation;
 import net.derohimat.samplebasemvp.events.MessagesEvent;
+import net.derohimat.samplebasemvp.model.air.AirQualityPojo;
 import net.derohimat.samplebasemvp.model.weather.WeatherPojo;
 import net.derohimat.samplebasemvp.util.DialogFactory;
 import net.derohimat.samplebasemvp.util.UnitLocale;
 import net.derohimat.samplebasemvp.view.AppBaseActivity;
 import net.derohimat.samplebasemvp.view.activity.settings.SettingsActivity;
-import net.derohimat.samplebasemvp.view.fragment.detail.DetailFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,10 +32,9 @@ import org.greenrobot.eventbus.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import timber.log.Timber;
 
-public class MainActivity extends AppBaseActivity implements MainMvpView {
+public class MainActivity extends AppBaseActivity implements MainMvpView, LocationListener {
 
     @Bind(R.id.textview_main_city)
     TextView textview_main_city;
@@ -48,14 +52,24 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
     TextView textView_main_wind;
     @Bind(R.id.imageView_main_icon)
     ImageView imageView_main_icon;
-    @Bind(R.id.button_main_next_days)
-    Button button_main_next_days;
+
+    @Bind(R.id.textview_AirQualityDescription)
+    TextView textview_AirQualityDescription;
+    @Bind(R.id.textview_AirQualityNumberIndicator)
+    TextView textview_AirQualityNumberIndicator;
+    @Bind(R.id.textview_AirQualityColorIndicator)
+    TextView textview_AirQualityColorIndicator;
+    @Bind(R.id.airQualityArrowWidget)
+    SpeedometerGauge airQualityArrowWidget;
+
 
     private static ProgressBar mProgressBar = null;
     private MainPresenter mMainPresenter;
+    private Location location;
 
     @Inject
     EventBus eventBus;
+
 
     @Override
     protected int getResourceLayout() {
@@ -77,8 +91,27 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
                 getBaseActionBar().setDisplayHomeAsUpEnabled(false);
             }
         });
+        DeviceLocation.setSubscriber(this, this);
+        setupAirQualityArrowWidget();
+    }
 
-        mMainPresenter.loadWeather("Bandung");
+    private void setupAirQualityArrowWidget() {
+        airQualityArrowWidget.setLabelConverter(new SpeedometerGauge.LabelConverter() {
+            @Override
+            public String getLabelFor(double progress, double maxProgress) {
+                return String.valueOf((int) Math.round(progress));
+            }
+        });
+
+        airQualityArrowWidget.setMaxSpeed(100);
+        airQualityArrowWidget.setMajorTickStep(20);
+        airQualityArrowWidget.setMinorTicks(5);
+
+        // Configure value range colors
+        airQualityArrowWidget.addColoredRange(30, 140, Color.GREEN);
+        airQualityArrowWidget.addColoredRange(140, 180, Color.YELLOW);
+        airQualityArrowWidget.addColoredRange(180, 400, Color.RED);
+
     }
 
     @Override
@@ -87,11 +120,11 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
         getComponent().inject(this);
     }
 
-    @OnClick(R.id.button_main_next_days)
-    void onClick_button_main_next_days() {
-        getBaseActionBar().setTitle("Next days");
-        getBaseFragmentManager().beginTransaction().replace(R.id.container_rellayout, DetailFragment.newInstance(1)).addToBackStack(null).commit();
-    }
+//    @OnClick(R.id.button_main_next_days)
+//    void onClick_button_main_next_days() {
+//        getBaseActionBar().setTitle("Next days");
+//        getBaseFragmentManager().beginTransaction().replace(R.id.container_rellayout, DetailFragment.newInstance(1)).addToBackStack(null).commit();
+//    }
 
     @Override
     protected void onDestroy() {
@@ -121,7 +154,9 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
 
                 } else {
                     //--- we are here
-                    mMainPresenter.loadWeather("Bandung");
+                    if (location != null){
+                        onLocationChanged(location);
+                    }
                 }
 
                 return true;
@@ -172,6 +207,19 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
     }
 
     @Override
+    public void showAirQuality(AirQualityPojo pojo) {
+        Timber.d("show AirQuality %s", pojo.toString());
+        Integer airQualityNumberIndicator = pojo.getNumberIndicator();
+
+        airQualityArrowWidget.setSpeed(airQualityNumberIndicator);
+        textview_AirQualityDescription.setText(pojo.getDescription());
+        textview_AirQualityNumberIndicator.setText(airQualityNumberIndicator.toString());
+//        textview_AirQualityColorIndicator.setText(pojo.getColorIndicator());
+    }
+
+
+
+    @Override
     public void showProgress() {
         if (mProgressBar == null) {
             mProgressBar = DialogFactory.DProgressBar(mContext);
@@ -216,5 +264,26 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
             return R.drawable.ic_cloudy;
         }
         return -1;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+        mMainPresenter.loadAirQuality(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
