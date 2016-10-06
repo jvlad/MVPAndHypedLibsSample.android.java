@@ -3,6 +3,7 @@ package net.derohimat.samplebasemvp.data.remote;
 import android.content.Context;
 
 import net.derohimat.samplebasemvp.BuildConfig;
+import net.derohimat.samplebasemvp.model.air.AirQualityPojo;
 import net.derohimat.samplebasemvp.model.forecast.Forecast;
 import net.derohimat.samplebasemvp.model.weather.WeatherPojo;
 
@@ -20,17 +21,20 @@ import rx.Observable;
 
 public interface APIService {
 
-    String ENDPOINT = "http://api.openweathermap.org/";
-    String API_KEY = "aa9af8d39d6519b1d47dec305bd253a4";
+    String ENDPOINT = "https://api.breezometer.com/baqi/";
+    String API_KEY = "1e018d2c49314deeb8fb39150b032e7d";
 
     @GET("data/2.5/weather?APPID=" + API_KEY)
     Observable<WeatherPojo> getWeatherForLatLon(@Query("lat") double lat, @Query("lng") double lng, @Query("units") String units);
 
-    @GET("data/2.5/weather?APPID=" + API_KEY)
-    Observable<WeatherPojo> getWeatherForCity(@Query("q") String city, @Query("units") String units);
+    @GET("key=" + API_KEY)
+    Observable<AirQualityPojo> getAirQualityByLatLon(@Query("lat") double lat, @Query("lng") double lng);
 
-    @GET("data/2.5/forecast?APPID=" + API_KEY)
-    Observable<Forecast> getForecastForCity(@Query("q") String city, @Query("units") String units, @Query("cnt") int cnt);
+//    @GET("data/2.5/weather?APPID=" + API_KEY)
+//    Observable<WeatherPojo> getWeatherForCity(@Query("q") String city, @Query("units") String units);
+//
+//    @GET("data/2.5/forecast?APPID=" + API_KEY)
+//    Observable<Forecast> getForecastForCity(@Query("q") String city, @Query("units") String units, @Query("cnt") int cnt);
 
     class Factory {
 
