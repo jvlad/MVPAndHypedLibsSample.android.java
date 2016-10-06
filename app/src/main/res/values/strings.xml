@@ -38,5 +38,6 @@
     <string name="generic_error_title">Ops! An error occurred.</string>
     <string name="next_days">Next Days</string>
     <string name="forecast">Forecast</string>
+    <string name="error_loading_air_quality">Error loading Air Quality</string>
 
 </resources>

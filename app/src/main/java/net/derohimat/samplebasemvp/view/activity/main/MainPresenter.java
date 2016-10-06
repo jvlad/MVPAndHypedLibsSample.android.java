@@ -59,7 +59,6 @@ public class MainPresenter implements BasePresenter<MainMvpView> {
 
         mMainMvpView.showProgress();
         if (weatherResponseSubscription != null) weatherResponseSubscription.unsubscribe();
-        if (airQualityResponseSubscription != null) airQualityResponseSubscription.unsubscribe();
 
         BaseApplication baseApplication = BaseApplication.get(mMainMvpView.getContext());
 
@@ -93,7 +92,13 @@ public class MainPresenter implements BasePresenter<MainMvpView> {
                         mWeatherPojo = weatherPojo;
                     }
                 });
+    }
 
+    public void loadAirQuality() {
+        mMainMvpView.showProgress();
+        if (airQualityResponseSubscription != null) airQualityResponseSubscription.unsubscribe();
+
+        BaseApplication baseApplication = BaseApplication.get(mMainMvpView.getContext());
         // TODO: 06/10/16 replace harcoded Lat and Long request parameters
         airQualityResponseSubscription = mAPIService.getAirQualityByLatLon(40.7324296, -73.9977264)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,11 +116,11 @@ public class MainPresenter implements BasePresenter<MainMvpView> {
 
                     @Override
                     public void onError(Throwable error) {
-                        Timber.e("Error loading weather", error);
+                        Timber.e("Error loading Air Quality", error);
                         if (isHttp404(error)) {
                             mEventBus.post(new MessagesEvent(false, baseApplication.getString(R.string.error_not_found)));
                         } else {
-                            mEventBus.post(new MessagesEvent(false, baseApplication.getString(R.string.error_loading_weather)));
+                            mEventBus.post(new MessagesEvent(false, baseApplication.getString(R.string.error_loading_air_quality)));
                         }
 
                         mMainMvpView.hideProgress();

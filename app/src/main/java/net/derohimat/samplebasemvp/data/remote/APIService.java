@@ -30,14 +30,15 @@ public interface APIService {
     @GET("data/2.5/forecast?APPID=" + WEATHER_API_KEY)
     Observable<Forecast> getForecastForCity(@Query("q") String city, @Query("units") String units, @Query("cnt") int cnt);
 
-    String WEATHER_ENDPOINT = "https://api.breezometer.com/baqi/";
-    String WEATHER_API_KEY = "1e018d2c49314deeb8fb39150b032e7d";
+    String WEATHER_ENDPOINT = "http://api.openweathermap.org/";
+    String WEATHER_API_KEY = "aa9af8d39d6519b1d47dec305bd253a4";
 
 
-    String AIR_QUALITY_ENDPOINT = "http://api.openweathermap.org/";
-    String AIR_QUALITY_API_KEY = "aa9af8d39d6519b1d47dec305bd253a4";
-    @GET("key=" + AIR_QUALITY_API_KEY)
-    Observable<AirQualityPojo> getAirQualityByLatLon(@Query("lat") double lat, @Query("lng") double lng);
+    String AIR_QUALITY_ENDPOINT = "http://api.breezometer.com/baqi/";
+    String AIR_QUALITY_API_KEY = "1e018d2c49314deeb8fb39150b032e7d";
+
+    @GET("?key=" + AIR_QUALITY_API_KEY)
+    Observable<AirQualityPojo> getAirQualityByLatLon(@Query("lat") double lat, @Query("lon") double lng);
 
     class Factory {
 
@@ -74,7 +75,7 @@ public interface APIService {
             OkHttpClient client = builder.build();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(APIService.WEATHER_ENDPOINT)
+                    .baseUrl(APIService.AIR_QUALITY_ENDPOINT)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

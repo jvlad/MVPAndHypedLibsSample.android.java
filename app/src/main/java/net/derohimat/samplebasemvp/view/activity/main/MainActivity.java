@@ -82,7 +82,7 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
             }
         });
 
-        mMainPresenter.loadWeather("Bandung");
+        mMainPresenter.loadAirQuality();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
 
                 } else {
                     //--- we are here
-                    mMainPresenter.loadWeather("Bandung");
+                    mMainPresenter.loadAirQuality();
                 }
 
                 return true;
@@ -180,7 +180,7 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
         Timber.d("show AirQuality %s", pojo.toString());
 
         textview_AirQualityDescription.setText(pojo.getDescription());
-        textview_AirQualityNumberIndicator.setText(pojo.getNumberIndicator());
+        textview_AirQualityNumberIndicator.setText(pojo.getNumberIndicator().toString());
         textview_AirQualityColorIndicator.setText(pojo.getColorIndicator());
     }
 
