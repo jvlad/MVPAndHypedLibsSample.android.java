@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sample Base MVP</string>
+    <string name="app_name">Android Test</string>
 
     <string name="action_settings">Settings</string>
     <string name="temp_current">0°</string>

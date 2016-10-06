@@ -136,14 +136,14 @@
             android:orientation="horizontal"
             >
 
-            <Button
-                android:id="@+id/button_main_next_days"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/next_days"
-                android:textSize="12sp"
-                />
+            <!--<Button-->
+                <!--android:id="@+id/button_main_next_days"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/next_days"-->
+                <!--android:textSize="12sp"-->
+                <!--/>-->
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

@@ -48,8 +48,6 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
     TextView textView_main_wind;
     @Bind(R.id.imageView_main_icon)
     ImageView imageView_main_icon;
-    @Bind(R.id.button_main_next_days)
-    Button button_main_next_days;
 
     private static ProgressBar mProgressBar = null;
     private MainPresenter mMainPresenter;
@@ -87,11 +85,11 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
         getComponent().inject(this);
     }
 
-    @OnClick(R.id.button_main_next_days)
-    void onClick_button_main_next_days() {
-        getBaseActionBar().setTitle("Next days");
-        getBaseFragmentManager().beginTransaction().replace(R.id.container_rellayout, DetailFragment.newInstance(1)).addToBackStack(null).commit();
-    }
+//    @OnClick(R.id.button_main_next_days)
+//    void onClick_button_main_next_days() {
+//        getBaseActionBar().setTitle("Next days");
+//        getBaseFragmentManager().beginTransaction().replace(R.id.container_rellayout, DetailFragment.newInstance(1)).addToBackStack(null).commit();
+//    }
 
     @Override
     protected void onDestroy() {
