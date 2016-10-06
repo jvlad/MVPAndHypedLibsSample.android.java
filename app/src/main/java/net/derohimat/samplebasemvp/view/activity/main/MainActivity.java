@@ -7,19 +7,18 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import net.derohimat.samplebasemvp.R;
 import net.derohimat.samplebasemvp.events.MessagesEvent;
+import net.derohimat.samplebasemvp.model.air.AirQualityPojo;
 import net.derohimat.samplebasemvp.model.weather.WeatherPojo;
 import net.derohimat.samplebasemvp.util.DialogFactory;
 import net.derohimat.samplebasemvp.util.UnitLocale;
 import net.derohimat.samplebasemvp.view.AppBaseActivity;
 import net.derohimat.samplebasemvp.view.activity.settings.SettingsActivity;
-import net.derohimat.samplebasemvp.view.fragment.detail.DetailFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,7 +26,6 @@ import org.greenrobot.eventbus.Subscribe;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 public class MainActivity extends AppBaseActivity implements MainMvpView {
@@ -48,12 +46,20 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
     TextView textView_main_wind;
     @Bind(R.id.imageView_main_icon)
     ImageView imageView_main_icon;
+    @Bind(R.id.textview_AirQualityDescription)
+    TextView textview_AirQualityDescription;
+    @Bind(R.id.textview_AirQualityNumberIndicator)
+    TextView textview_AirQualityNumberIndicator;
+    @Bind(R.id.textview_AirQualityColorIndicator)
+    TextView textview_AirQualityColorIndicator;
+
 
     private static ProgressBar mProgressBar = null;
     private MainPresenter mMainPresenter;
 
     @Inject
     EventBus eventBus;
+
 
     @Override
     protected int getResourceLayout() {
@@ -168,6 +174,17 @@ public class MainActivity extends AppBaseActivity implements MainMvpView {
         textView_main_pressure.setText(getString(R.string.pressure) + " " + weatherPojo.getMain().getPressure() + "hPa");
         imageView_main_icon.setImageDrawable(ContextCompat.getDrawable(getContext(), getIcon(weatherPojo.getWeather().get(0).getId())));
     }
+
+    @Override
+    public void showAirQuality(AirQualityPojo pojo) {
+        Timber.d("show AirQuality %s", pojo.toString());
+
+        textview_AirQualityDescription.setText(pojo.getDescription());
+        textview_AirQualityNumberIndicator.setText(pojo.getNumberIndicator());
+        textview_AirQualityColorIndicator.setText(pojo.getColorIndicator());
+    }
+
+
 
     @Override
     public void showProgress() {
